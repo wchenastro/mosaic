@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import interpolate
 from scipy.optimize import curve_fit
+from scipy.ndimage import binary_dilation
 from mosaic.utilities import normInverse
 import logging
 #from matplotlib import pyplot as plt
@@ -401,9 +402,97 @@ def fitEllipse(image):
 
     return widthH, widthV, angle
 
-def createBeamshapeModel(originalImage, density, windowLength, interpolatedLength = 800):
+def growBoundary(img, seed = None, threshold=0.2):
+
+    height, width = img.shape
+    mask = np.zeros_like(img, dtype=np.uint8)
+    max_intensity = np.max(img)
+    min_intensity = np.min(img)
+    intensity_threshold = min_intensity + threshold * (max_intensity - min_intensity)
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+
+    # Queue for growing the region
+    if seed is None:
+        seed = np.where(img == max_intensity)
+    region = [seed]
+
+    #  from matplotlib import pyplot as plt
+    # mask[seed] = 1  # Mark the seed point
+    # Perform region growing
+    #  counter = 0
+    #  exp_counter = 0
+    #  expSeries = (500*np.log(np.arange(height*width))).astype(int)
+    while region:
+        y, x = region.pop(0)  # Get the next point in the region
+
+        for dy, dx in directions:
+            ny, nx = y + dy, x + dx
+            #  if visited[ny, nx]:
+                #  continue
+            if 0 <= ny < height and 0 <= nx < width and mask[ny, nx] == 0:
+                if img[ny, nx] >= intensity_threshold:
+                    mask[ny, nx] = 1
+                    #  visited[nx, ny] = True
+                    region.append((ny, nx))
+                #  else:
+                    #  boarder.append((y, x))
+            '''plotting'''
+            """
+            if counter%expSeries[exp_counter] == 0:
+                exp_counter = exp_counter + 1
+                plt.imshow(img, cmap='jet')
+                alpha = np.where(mask == 0, 0, 0.5).astype(float)
+                plt.imshow(mask, vmin=0, vmax=1, alpha=alpha)
+                plt.savefig(f'mask/mask_{counter:06}.png')
+                plt.close()
+            counter = counter + 1
+            """
+
+    '''
+    from matplotlib import pyplot as plt
+    plt.imshow(img, cmap='jet')
+    alpha = np.where(mask == 0, 0, 0.5).astype(float)
+    plt.imshow(mask, vmin=0, vmax=1, alpha=alpha)
+    plt.show()
+    '''
+
+    return mask
+
+def expendRegion(img, mask):
+
+
+    # remove the duplicate points
+    #  boarder = list(set(boarder))
+    expanded_mask = mask.copy()
+
+    for i in range(50):
+        expanded_mask = binary_dilation(expanded_mask , structure=np.ones((3,3)),
+                iterations=5)
+        central_beam = img[np.where(expanded_mask == 1)]
+        if np.min(central_beam) < 0.15:
+            break
+
+    '''
+    from matplotlib import pyplot as plt
+    plt.imshow(img, cmap='jet')
+    alpha = np.where(expanded_mask == 0, 0, 0.5).astype(float)
+    plt.imshow(expanded_mask, vmin=0, vmax=1, alpha=alpha)
+    plt.show()
+    '''
+
+    return expanded_mask
+
+def createBeamshapeModel(originalImage, density, windowLength,
+         interpolatedLength = 800, options={}):
 
     image = interpolate_image(originalImage, density, interpolatedLength)
+
+    if "flag_sidelobe" in options and options["flag_sidelobe"]:
+        growStartPoint = [interpolatedLength//2, interpolatedLength//2]
+        growRegionMask = growBoundary(image, growStartPoint, threshold=0.4)
+        expandedRegionMask = expendRegion(image, growRegionMask)
+        image = image * expandedRegionMask
 
     samples = []
 

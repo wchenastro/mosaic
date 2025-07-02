@@ -32,7 +32,8 @@ def makeKatPointAntenna(antennaString):
 def createBeamMatrix(antennaCoords, sourceCoord, observeTime, frequencies,
         beamnum, overlap, subarray, overlay_source, overlay_source_name,
         antenna_coordinate_type, size, resolution, tilingMethod, tilingShape,
-        tilingParameter, tilingParameterCoordinateType, weights, interpolation, output):
+        tilingParameter, tilingParameterCoordinateType, weights, interpolation,
+        flag_sidelobe, output):
 
     if antenna_coordinate_type == 'geo':
         antennaCoord_geo = np.fromstring(
@@ -53,7 +54,11 @@ def createBeamMatrix(antennaCoords, sourceCoord, observeTime, frequencies,
     reference = (-30.71106, 21.44389, 1035)
     psf = PsfSim(antennas, frequencies[0], reference)
 
-    newBeamShape = psf.get_beam_shape(sourceCoord, observeTime, size, resolution, weights)
+    options = {}
+    options["flag_sidelobe"] = flag_sidelobe
+
+    newBeamShape = psf.get_beam_shape(
+            sourceCoord, observeTime, size, resolution, weights, options)
     if "psf_plot" in output:
         newBeamShape.plot_psf(output["psf_plot"][0], overlap = overlap,
                 shape_overlay=True, interpolation=interpolation)
@@ -110,6 +115,7 @@ def parseOptions(parser):
     parser.add_argument("--version", help="show the version of this package", action="store_true")
     parser.add_argument("--weight", action="store_true",
             help='apply weights to individual antenna, attach weight after the item in --subarray, e.g., 0:0.5, 1:0.7, 2:0.5 ')
+    parser.add_argument("--flag_sidelobe", help="[Experimental] exculde the sidelobes", action="store_true")
 
     args = parser.parse_args()
 
@@ -333,6 +339,11 @@ def parseOptions(parser):
     else:
         paras["overlay_source"] = []
         paras["overlay_source_name"] = []
+
+    if args.flag_sidelobe:
+        paras["flag_sidelobe"] = True
+    else:
+        paras["flag_sidelobe"] = False
 
     createBeamMatrix(**paras)
 

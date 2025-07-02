@@ -110,7 +110,7 @@ class PsfSim(object):
             raise Exception("source are passed in unknown format")
 
     def get_beam_shape(self, source, time, beam_number = 400, beam_size = None,
-            weights = None):
+            weights = None, options = {}):
         """
         return the beamshape of current oservation parameters
         assuming the beam is roughly a ellipse.
@@ -138,7 +138,7 @@ class PsfSim(object):
         if isinstance(source, katpoint.Target):
             self.observation.setTargetName(source.name)
         self.observation.setAntennaWeights(weights)
-        self.observation.createContour(self.antennas)
+        self.observation.createContour(self.antennas, options=options)
         axisH, axisV, angle, image_range = self.observation.getBeamAxis()
         horizon = np.rad2deg(self.observation.getBoreSight().horizontal)
         psf = self.observation.getPointSpreadFunction()
