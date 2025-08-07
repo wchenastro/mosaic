@@ -164,7 +164,7 @@ Example:
 
 |                                        Incorrect fit due to sidelobes                                        |                                        Exclusion of sidelobes                                        |
 | :-------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
-| ![Incorrect fit due to sidelobes](https://gist.github.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/0fb050af64b2a8b31cd1d348c96acd5c7daa1b64/psf_with_sidelobes.png) | ![Exclusion of sidelobes](https://gist.github.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/0fb050af64b2a8b31cd1d348c96acd5c7daa1b64/psf_flag_sidelobes.png) |
+| ![Incorrect fit due to sidelobes](https://gist.githubusercontent.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/0fb050af64b2a8b31cd1d348c96acd5c7daa1b64/psf_with_sidelobes.png) | ![Exclusion of sidelobes](https://gist.githubusercontent.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/0fb050af64b2a8b31cd1d348c96acd5c7daa1b64/psf_flag_sidelobes.png) |
 
 ## License
 
