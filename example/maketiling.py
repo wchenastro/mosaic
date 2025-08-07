@@ -8,7 +8,6 @@ import logging
 import matplotlib
 # matplotlib.use('Agg')
 
-import matplotlib.pyplot as plt
 loggerFormat = '%(asctime)-15s %(filename)s  %(message)s'
 logging.basicConfig(format = loggerFormat, level=logging.WARNING)
 logger = logging.getLogger()

@@ -44,7 +44,7 @@ class InterferometryObservation:
         self.weights = None
         self.boresightFrame = coord.Boresight.EquatorialFrame
         self.updateBeamCoordinates(self.beamSizeFactor, self.imageDensity, self.gridNumOfDFT)
-        self.options = None
+        self.options = {}
 
 
     def setInterpolating(self, state):
@@ -521,7 +521,7 @@ class InterferometryObservation:
 
         return beamshapeModel
 
-    def createContour(self, antennas, options=None, fileName=None, minAlt=0):
+    def createContour(self, antennas, options={}, fileName=None, minAlt=0):
 
         self.options = options
 

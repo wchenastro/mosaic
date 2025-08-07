@@ -195,7 +195,7 @@ class BeamShape(object):
         return axisH, axisV, angle
 
     def plot_psf(self, filename, overlap = 0.5, shape_overlay = False,
-            colormap = False, interpolation = True, output_format = 'svg'):
+            colormap = False, interpolation = True, output_format = None):
         """
         plot the point spread function
 

@@ -271,7 +271,7 @@ def plotBeamWithFit2(array, center, sideLength, widthH, widthV, angle,
 
 def plotBeamWithFit(array, center, sideLength, widthH, widthV, angle, resolution,
         fileName='contourfit.png', colormap = False, interpolation = True,
-        shapeOverlay = False, output_format = 'png'):
+        shapeOverlay = False, output_format = None):
     thisDpi = 96.
     matplotlib.rcParams.update({'font.size': 20})
 
@@ -321,7 +321,15 @@ def plotBeamWithFit(array, center, sideLength, widthH, widthV, angle, resolution
             wspace=0, hspace=0)
 
     if isinstance(fileName, str) is True:
-        plt.savefig(fileName, dpi=thisDpi)
+        if output_format is not None:
+            plt.savefig(fileName, dpi=thisDpi, format=output_format)
+        else:
+            fileName_group = fileName.split('.')
+            if len(fileName_group) > 1:
+                output_format = fileName_group[-1]
+                plt.savefig(fileName, dpi=thisDpi, format=output_format)
+            else:
+                plt.savefig(fileName + '.png', dpi=thisDpi, format='png')
     else:
         plt.savefig(fileName, dpi=thisDpi, format=output_format)
 

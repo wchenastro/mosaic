@@ -466,20 +466,23 @@ def expendRegion(img, mask):
     #  boarder = list(set(boarder))
     expanded_mask = mask.copy()
 
-    for i in range(50):
-        expanded_mask = binary_dilation(expanded_mask , structure=np.ones((3,3)),
-                iterations=5)
-        central_beam = img[np.where(expanded_mask == 1)]
-        if np.min(central_beam) < 0.15:
-            break
-
-    '''
-    from matplotlib import pyplot as plt
-    plt.imshow(img, cmap='jet')
-    alpha = np.where(expanded_mask == 0, 0, 0.5).astype(float)
-    plt.imshow(expanded_mask, vmin=0, vmax=1, alpha=alpha)
-    plt.show()
-    '''
+    try:
+        for i in range(50):
+            expanded_mask = binary_dilation(expanded_mask , structure=np.ones((3,3)),
+                    iterations=5)
+            central_beam = img[np.where(expanded_mask == 1)]
+            if np.min(central_beam) < 0.15:
+                break
+        '''
+        from matplotlib import pyplot as plt
+        plt.imshow(img, cmap='jet')
+        alpha = np.where(expanded_mask == 0, 0, 0.5).astype(float)
+        plt.imshow(expanded_mask, vmin=0, vmax=1, alpha=alpha)
+        plt.show()
+        '''
+    except:
+        logger.warning("expansion failed!")
+        return mask
 
     return expanded_mask
 
@@ -550,7 +553,14 @@ def createBeamshapeModel(originalImage, density, windowLength,
                 logger.warning('level {} countour is None!'.format(count))
             para = [np.nan, np.nan, 0, 0, np.nan]
         else:
-            para = fitContour(powerline)
+
+            if ("suppress_fitting_warning" in options
+                and options["suppress_fitting_warning"]):
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    para = fitContour(powerline)
+            else:
+                para = fitContour(powerline)
         samples.append(para)
     '''
     for segs, coll in zip(contour.allsegs, contour.collections):
