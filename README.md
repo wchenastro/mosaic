@@ -18,7 +18,7 @@ pip3 install git+https://github.com/wchenastro/mosaic.git
 
 ## Usage
 
-There is a helper script `example/maketiling.py` to demonstrate the interface of the package
+There is a helper script `example/maketiling.py` to demonstrate the interface of the package. An example of antenna coordinate file is provided here in [katpoint](https://gist.githubusercontent.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/1e0e97311f269690f83a5870e26313b761a9288e/antenna.katpoint.csv) format and in [geographic](https://gist.githubusercontent.com/wchenastro/eb0159359511808ff7d0363db9b32d8b/raw/1e0e97311f269690f83a5870e26313b761a9288e/antenna.geo.csv) coordinates. If the geographic coordinates are used, the parameter `--antenna_coordinate_type` should be set to `geo`.
 
 ### Simulate the interferometric pattern and generate a fits file and a plot
 
@@ -158,7 +158,7 @@ python3 ./maketiling.py --ants antenna.csv --freq 1.284e9 --source 00:24:05.67 -
 --subarray 000, 062, 063 --psf_plot psf.png
 ```
 
-This option is useful when the presence of the sidelobes is prominent, probabilly due to the number of antennas is rather low or the UV coverage is not even. It masks out sidelobes and preserves only the main beam for fitting.
+`--flag_sidelobe`: flag and excludethe sidelobes during the fitting of the beam shape. This option is useful when the presence of the sidelobes is prominent, probabilly due to the number of antennas is rather low or the UV coverage is not even. It masks out sidelobes and preserves only the main beam for fitting.
 
 Example:
 
