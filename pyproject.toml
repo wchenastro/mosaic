@@ -23,8 +23,7 @@ dependencies = [
   'astropy'
 ]
 
-license = "MIT"
-license-files = ["LICEN[CS]E*"]
+license = {file = "LICENSE"}
 
 [project.urls]
 Homepage = "https://github.com/wchenastro/Mosaic"
